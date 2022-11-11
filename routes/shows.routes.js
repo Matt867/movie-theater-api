@@ -2,12 +2,14 @@ const { Router } = require('express')
 const { Show } = require('../models/Show')
 const showRouter = Router()
 
+// GET Request - all shows from db /shows
 showRouter.get('/', async (req, res) => {
     const shows = await Show.findAll()
 
     res.json(shows)
 })
 
+// GET Request - get specific show /shows/:id
 showRouter.get('/:id', async (req, res) => {
     try {
         const show = await Show.findByPk(req.params.id)
@@ -17,7 +19,7 @@ showRouter.get('/:id', async (req, res) => {
             throw new Error("Show does not exist")
         }
     } catch (error) {
-        res.status(404).send(error)
+        res.status(404).send(error.message)
     }
 })
 
@@ -35,6 +37,59 @@ showRouter.get('/genres/:genre', async (req, res) => {
         res.status(404).send(error.message)
     }
 })
+
+
+// PUT Request - change a shows rating
+showRouter.put('/:id/watched', async (req, res) => {
+    try {
+        show = await Show.findByPk(req.params.id);
+        if (show) {
+            await Show.update(req.body, { where: { id: req.params.id } })
+            res.sendStatus(201)
+        } else {
+            throw new Error("Invalid show id")
+        }
+    } catch (error) {
+        res.status(404).send(error.message)
+    }
+})
+
+// PUT Request - update the status on a specific show from “canceled” to “on-going” or vice versa /shows/:id/updates
+showRouter.put('/:id/updates', async (req, res) => {
+    const validStatuses = ['on-going', 'cancelled']
+    try {
+        show = await Show.findByPk(req.params.id);
+        if (show) {
+            if (validStatuses.includes(req.body.status)) {
+                await Show.update(req.body, {where: {id: req.params.id}});
+                res.sendStatus(201);
+            } else {
+                throw new Error("Invalid status")
+            }
+        } else {
+            res.status(404).send("Invalid show id")
+        }
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
+
+// DELETE Request - should be able to delete a specific show /shows/:id
+showRouter.delete('/:id', async (req, res) => {
+    try {
+        const show = await Show.findByPk(req.params.id)
+        if (show) {
+            await show.destroy()
+            res.sendStatus(200)
+        } else {
+            throw new Error("Invalid show id")
+        }
+    } catch (error) {
+        res.status(404).send(error.message)
+    }
+})
+
+
 
 
 module.exports = showRouter

@@ -4,9 +4,10 @@
   "description": "Movie Theater Project for Express Week Day 5",
   "main": "db.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "test": "jest /tests"
+    "test": "jest /tests",
+    "test-users": "jest /tests/users.test.js",
+    "test-shows": "jest /tests/shows.test.js"
   },
   "author": "",
   "license": "ISC",
