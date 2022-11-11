@@ -70,6 +70,10 @@ describe('Test of PUT /shows/:id/watched endpoint', () => {
         rating: 5,
     }
 
+    let invalidRating = {
+        rating: '',
+    }
+
     test('Test of this endpoint with a valid id', async () => {
         const response = await request(app).put('/shows/2/watched').send(showEdit)
         expect(response.statusCode).toBe(201)
@@ -79,6 +83,12 @@ describe('Test of PUT /shows/:id/watched endpoint', () => {
         const response = await request(app).put('/shows/843/watched').send(showEdit)
         expect(response.statusCode).toBe(404)
         expect(response.error.text).toBe("Invalid show id")
+    })
+
+    test('Test of this endpoint with an invalid rating', async () => {
+        const response = await request(app).put('/shows/2/watched').send(invalidRating)
+        expect(response.statusCode).toBe(404)
+        expect(response.error.text).toBe("Invalid rating")
     })
 
 })

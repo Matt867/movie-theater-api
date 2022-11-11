@@ -43,11 +43,15 @@ showRouter.get('/genres/:genre', async (req, res) => {
 showRouter.put('/:id/watched', async (req, res) => {
     try {
         show = await Show.findByPk(req.params.id);
-        if (show) {
-            await Show.update(req.body, { where: { id: req.params.id } })
-            res.sendStatus(201)
+        if (req.body.rating) {
+            if (show) {
+                await Show.update(req.body, { where: { id: req.params.id } })
+                res.sendStatus(201)
+            } else {
+                throw new Error("Invalid show id")
+            }
         } else {
-            throw new Error("Invalid show id")
+            throw new Error("Invalid rating")
         }
     } catch (error) {
         res.status(404).send(error.message)
@@ -56,7 +60,6 @@ showRouter.put('/:id/watched', async (req, res) => {
 
 // PUT Request - update the status on a specific show from “canceled” to “on-going” or vice versa /shows/:id/updates
 showRouter.put('/:id/updates', async (req, res) => {
-    const validStatuses = ['cancelled', 'on-going']
     try {
         show = await Show.findByPk(req.params.id);
         if (req.body.status && req.body.status.length > 5 && req.body.status.length < 25){
