@@ -95,7 +95,13 @@ describe('Test of PUT /shows/:id/updates endpoint', () => {
     }
 
     let invalidStatus = {
-        status: 'invalid'
+        status: 'inv'
+    }
+    let invalidStatus2 = {
+        status: 'invdwadwadwadwadwadwadawdwadawdawdwadawdawdawdawdawdawdawd'
+    }
+    let invalidStatus3 = {
+        status: ''
     }
 
     test('Test of this endpoint toggling from on-going to cancelled', async () => {
@@ -114,8 +120,20 @@ describe('Test of PUT /shows/:id/updates endpoint', () => {
         expect(response.error.text).toBe("Invalid show id")
     })
 
-    test('Test of this endpoint by sending an invalid status', async () => {
-        const response = await request(app).put('/shows/2/updates').send(invalidStatus)
+    test('Test of this endpoint with an invalid status', async () => {
+        const response = await request(app).put('/shows/843/updates').send(invalidStatus)
+        expect(response.statusCode).toBe(400)
+        expect(response.error.text).toBe("Invalid status")
+    })
+
+    test('Test of this endpoint with an invalid status', async () => {
+        const response = await request(app).put('/shows/843/updates').send(invalidStatus2)
+        expect(response.statusCode).toBe(400)
+        expect(response.error.text).toBe("Invalid status")
+    })
+
+    test('Test of this endpoint with an invalid status', async () => {
+        const response = await request(app).put('/shows/843/updates').send(invalidStatus3)
         expect(response.statusCode).toBe(400)
         expect(response.error.text).toBe("Invalid status")
     })

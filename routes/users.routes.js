@@ -1,6 +1,5 @@
 const { Router } = require('express')
-const { User } = require('../models/User')
-const { Show } = require('../models/Show')
+const { User, Show } = require('../models/index')
 const userRouter = Router()
 
 // GET Request - all users /users
@@ -41,6 +40,21 @@ userRouter.get('/:UserId/shows', async (req, res) => {
 })
 
 // PUT Request - update and add a show if a user has watched it /users/:UserId/shows/:showid
-
+userRouter.put('/:UserId/shows/:ShowId', async (req, res) => {
+    const UserId = req.params.UserId
+    const ShowId = req.params.ShowId
+    try {
+        const show = await Show.findByPk(ShowId)
+        const user = await User.findByPk(UserId)
+        if (show && user) {
+            await show.setUser(user)
+            res.sendStatus(201)
+        } else {
+            throw new Error("Invalid ShowId or UserId")
+        }
+    } catch (error) {
+        res.status(404).send(error.message)
+    }
+})
 
 module.exports = userRouter

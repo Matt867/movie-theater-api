@@ -29,8 +29,22 @@ describe('Testing /users/:id endpoint', () => {
     })
 })
 
-
-// GET Request - all shows watched by a user /users/:UserId/shows
-
-
 // PUT Request - update and add a show if a user has watched it /users/:UserId/shows/:showid
+// GET Request - all shows watched by a user /users/:UserId/shows
+describe('Testing PUT /users/:UserId/shows/:showid and GET /users/:UserId/shows', () => {
+
+    test('Adding lots of shows to a users watch list', async () => {
+
+        const response = await request(app).put(`/users/2/shows/5`)
+        expect(response.statusCode).toBe(201)
+
+    })
+
+    test('Test of GET /users/2/shows', async () => {
+        const response = await request(app).get('/users/2/shows')
+        expect(response.body.length).toBe(1)
+        expect(response.statusCode).toBe(200)
+        expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
+    })
+
+})

@@ -56,18 +56,18 @@ showRouter.put('/:id/watched', async (req, res) => {
 
 // PUT Request - update the status on a specific show from “canceled” to “on-going” or vice versa /shows/:id/updates
 showRouter.put('/:id/updates', async (req, res) => {
-    const validStatuses = ['on-going', 'cancelled']
+    const validStatuses = ['cancelled', 'on-going']
     try {
         show = await Show.findByPk(req.params.id);
-        if (show) {
-            if (validStatuses.includes(req.body.status)) {
+        if (req.body.status && req.body.status.length > 5 && req.body.status.length < 25){
+            if (show) {
                 await Show.update(req.body, {where: {id: req.params.id}});
-                res.sendStatus(201);
+                res.sendStatus(201)
             } else {
-                throw new Error("Invalid status")
+                res.status(404).send("Invalid show id")
             }
         } else {
-            res.status(404).send("Invalid show id")
+            throw new Error("Invalid status")
         }
     } catch (error) {
         res.status(400).send(error.message)
